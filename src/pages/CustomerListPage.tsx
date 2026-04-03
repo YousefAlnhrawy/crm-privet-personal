@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useCRM } from '../useCRM';
+import { useCRM } from '../context/CRMContext';
 import CustomerCard from '../components/CustomerCard';
 import AddCustomerModal from '../components/AddCustomerModal';
 import { Customer } from '../types';

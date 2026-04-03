@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useCRM } from '../useCRM';
+import { useCRM } from '../context/CRMContext';
 import { CustomerStatus, CustomerSize } from '../types';
 import { X, Upload, UserPlus } from 'lucide-react';
 

@@ -1,4 +1,4 @@
-import { useCRM } from '../useCRM';
+import { useCRM } from '../context/CRMContext';
 import { Users, UserCheck, UserPlus, Briefcase, TrendingUp, Clock } from 'lucide-react';
 import { motion } from 'motion/react';
 

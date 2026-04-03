@@ -1,7 +1,17 @@
-import { useState, useEffect } from 'react';
-import { Customer, Agent } from './types';
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { Customer, Agent } from '../types';
 
-export function useCRM() {
+interface CRMContextType {
+  customers: Customer[];
+  agents: Agent[];
+  addCustomer: (customer: Omit<Customer, 'id' | 'createdAt'>) => void;
+  updateCustomer: (id: string, updatedData: Partial<Customer>) => void;
+  deleteCustomer: (id: string) => void;
+}
+
+const CRMContext = createContext<CRMContextType | undefined>(undefined);
+
+export function CRMProvider({ children }: { children: ReactNode }) {
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [agents, setAgents] = useState<Agent[]>([]);
 
@@ -9,10 +19,21 @@ export function useCRM() {
     const savedCustomers = localStorage.getItem('crm_customers');
     const savedAgents = localStorage.getItem('crm_agents');
     
-    if (savedCustomers) setCustomers(JSON.parse(savedCustomers));
-    if (savedAgents) setAgents(JSON.parse(savedAgents));
-    else {
-      // Default agents if none exist
+    if (savedCustomers) {
+      try {
+        setCustomers(JSON.parse(savedCustomers));
+      } catch (e) {
+        console.error("Error parsing customers", e);
+      }
+    }
+    
+    if (savedAgents) {
+      try {
+        setAgents(JSON.parse(savedAgents));
+      } catch (e) {
+        console.error("Error parsing agents", e);
+      }
+    } else {
       const defaultAgents = [
         { id: '1', name: 'أحمد محمد', phone: '0123456789', email: 'ahmed@example.com' },
         { id: '2', name: 'سارة علي', phone: '0112233445', email: 'sara@example.com' }
@@ -45,11 +66,17 @@ export function useCRM() {
     saveCustomers(customers.filter(c => c.id !== id));
   };
 
-  return {
-    customers,
-    agents,
-    addCustomer,
-    updateCustomer,
-    deleteCustomer,
-  };
+  return (
+    <CRMContext.Provider value={{ customers, agents, addCustomer, updateCustomer, deleteCustomer }}>
+      {children}
+    </CRMContext.Provider>
+  );
+}
+
+export function useCRM() {
+  const context = useContext(CRMContext);
+  if (context === undefined) {
+    throw new Error('useCRM must be used within a CRMProvider');
+  }
+  return context;
 }

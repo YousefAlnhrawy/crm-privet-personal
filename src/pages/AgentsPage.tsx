@@ -1,4 +1,4 @@
-import { useCRM } from '../useCRM';
+import { useCRM } from '../context/CRMContext';
 import { Phone, Mail, User, ShieldCheck } from 'lucide-react';
 
 export default function AgentsPage() {
